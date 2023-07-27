@@ -4,6 +4,7 @@ using EspacioMenu;
 using System;
 namespace EspacioLogicaJuego;
 
+
 public class LogicaJuego
 {
     public List<Personaje> ObtenerPersonajes(string path)
@@ -241,12 +242,13 @@ En Animal Combat, la emoción nunca se detiene.¡Enfréntate a los desafíos, de
         personajeJson.GuardarPersonajes(listaPersonajes, path);
         return personajeSeleccionado;
     }
-}
-public void dibujarEscena(Personaje jugador1, Personaje jugador2)
-{
 
-    Console.Clear();
-    Console.WriteLine(@"
+
+    public void dibujarEscena(Personaje jugador1, Personaje jugador2)
+    {
+
+        Console.Clear();
+        Console.WriteLine(@"
 .-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-.
 |                                                                       |
 |                    {0}     VS    {1}                                      
@@ -254,133 +256,157 @@ public void dibujarEscena(Personaje jugador1, Personaje jugador2)
 `-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-----'", jugador1.Nombre, jugador2.Nombre);
 
 
-    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), jugador1.Color, true);
-    Console.WriteLine(jugador1.Asci);
-    dibujarBarraSalud(jugador1.Salud);
-    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), jugador2.Color, true);
+        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), jugador1.Color, true);
+        Console.WriteLine(jugador1.Asci);
+        dibujarBarraSalud(jugador1.Salud);
+        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), jugador2.Color, true);
 
-    Console.WriteLine(jugador2.Asci);
-    dibujarBarraSalud(jugador2.Salud);
-    Console.ResetColor();
+        Console.WriteLine(jugador2.Asci);
+        dibujarBarraSalud(jugador2.Salud);
+        Console.ResetColor();
 
-}
-private void dibujarBarraSalud(int saludJugador)
-{
-    Console.ResetColor();
-    Console.Write("[");
-    Console.BackgroundColor = ConsoleColor.Green;
-    for (int i = 0; i < saludJugador / 2; i++)
-    {
-        Console.Write(" ");
     }
-    Console.BackgroundColor = ConsoleColor.Black;
-    for (int i = saludJugador / 2; i < 50; i++)
+    private void dibujarBarraSalud(int saludJugador)
     {
-        Console.Write(" ");
-    }
-    Console.ResetColor();
-    Console.Write(@"] ({0}/100)", saludJugador);
-
-
-
-}
-
-public Personaje combate(Personaje jugador1, Personaje jugador2)
-{
-
-    bool jugadorAbandono = false;
-    while (jugador1.Salud > 0 && jugador2.Salud > 0)
-    {
-
-        if (jugador2.Salud > 0)
+        Console.ResetColor();
+        Console.Write("[");
+        Console.BackgroundColor = ConsoleColor.Green;
+        for (int i = 0; i < saludJugador / 2; i++)
         {
-            jugadorAbandono = pelea(jugador1, jugador2);
-            dibujarEscena(jugador1, jugador2);
-            if (jugadorAbandono) return jugador2;
+            Console.Write(" ");
+        }
+        Console.BackgroundColor = ConsoleColor.Black;
+        for (int i = saludJugador / 2; i < 50; i++)
+        {
+            Console.Write(" ");
+        }
+        Console.ResetColor();
+        Console.Write(@"] ({0}/100)", saludJugador);
+
+
+
+    }
+
+    public Personaje combate(Personaje jugador1, Personaje jugador2)
+    {
+
+        bool jugadorAbandono = false;
+        while (jugador1.Salud > 0 && jugador2.Salud > 0)
+        {
+
+            if (jugador2.Salud > 0)
+            {
+                jugadorAbandono = pelea(jugador1, jugador2);
+                dibujarEscena(jugador1, jugador2);
+                if (jugadorAbandono) return jugador2;
+
+            }
+
+            if (jugador2.Salud > 0)
+            {
+                jugadorAbandono = pelea(jugador2, jugador1);
+                dibujarEscena(jugador1, jugador2);
+                if (jugadorAbandono) return jugador1;
+
+            }
+        }
+        if (jugador1.Salud > 0) return jugador1;
+        return jugador2;
+
+
+
+    }
+
+
+
+    public bool pelea(Personaje atacante, Personaje defensor)
+    {
+
+        if (atacante != null)
+        {
+
+            string prompt = (atacante.Nombre).ToUpper() + " (" + atacante.Tipo + ")  ELIJA SU PROXIMO MOVIMIENTO";
+            string[] options = { "ATACAR", "USAR PODER", "ABANDONAR" };
+            Menu opcionesPelea = new Menu(options, prompt);
+            int seleccionPelea = opcionesPelea.RunSinClear(atacante.Color);
+            switch (seleccionPelea)
+            {
+                case 0:
+                    atacar(atacante, defensor);
+                    break;
+                case 1:
+                    usarPoder(atacante, defensor);
+                    break;
+                case 2:
+                    return true;
+
+
+            };
 
         }
+        return false;
 
-        if (jugador2.Salud > 0)
-        {
-            jugadorAbandono = pelea(jugador2, jugador1);
-            dibujarEscena(jugador1, jugador2);
-            if (jugadorAbandono) return jugador1;
 
-        }
     }
-    if (jugador1.Salud > 0) return jugador1;
-    return jugador2;
 
-
-
-}
-
-
-
-public bool pelea(Personaje atacante, Personaje defensor)
-{
-
-    if (atacante != null)
+    public void atacar(Personaje atacante, Personaje defensor)
     {
+        Random random = new Random();
+        int ataque = atacante.Fuerza * atacante.Destreza * atacante.Nivel;
+        int efectividad = random.Next(1, 101);
+        int defensa = defensor.Armadura * defensor.Velocidad;
+        int ajuste = 500;
+        int danio = ((ataque * efectividad) - defensa) / ajuste;
+        defensor.Salud -= danio;
 
-        string prompt = (atacante.Nombre).ToUpper() + " (" + atacante.Tipo + ")  ELIJA SU PROXIMO MOVIMIENTO";
-        string[] options = { "ATACAR", "USAR PODER", "ABANDONAR" };
-        Menu opcionesPelea = new Menu(options, prompt);
-        int seleccionPelea = opcionesPelea.RunSinClear(atacante.Color);
-        switch (seleccionPelea)
-        {
-            case 0:
-                atacar(atacante, defensor);
-                break;
-            case 1:
-                usarPoder(atacante, defensor);
-                break;
-            case 2:
-                return true;
-
-
-        };
 
     }
-    return false;
+    public void usarPoder(Personaje atacante, Personaje defensor)
+    {
+        Random random = new Random();
+        int fuerza = atacante.Fuerza + 5;
+        int ataque = fuerza * atacante.Destreza * atacante.Nivel;
+        int efectividad = random.Next(1, 101);
+        int defensa = defensor.Armadura * defensor.Velocidad;
+        int ajuste = 500;
+        int danio = ((ataque * efectividad) - defensa) / ajuste;
+        defensor.Salud -= danio;
+        atacante.Salud = atacante.Salud - 5;
 
 
-}
-
-public void atacar(Personaje atacante, Personaje defensor)
-{
-    Random random = new Random();
-    int ataque = atacante.Fuerza * atacante.Destreza * atacante.Nivel;
-    int efectividad = random.Next(1, 101);
-    int defensa = defensor.Armadura * defensor.Velocidad;
-    int ajuste = 500;
-    int danio = ((ataque * efectividad) - defensa) / ajuste;
-    defensor.Salud -= danio;
-
-
-}
-
-public void usarPoder(Personaje atacante, Personaje defensor)
-{
-    Random random = new Random();
-    int fuerza = atacante.Fuerza + 5;
-    int ataque = fuerza * atacante.Destreza * atacante.Nivel;
-    int efectividad = random.Next(1, 101);
-    int defensa = defensor.Armadura * defensor.Velocidad;
-    int ajuste = 500;
-    int danio = ((ataque * efectividad) - defensa) / ajuste;
-    defensor.Salud -= danio;
-    atacante.Salud = atacante.Salud - 5;
+    }
+    public (bool jugadorGano, bool jugadorAbandono) combateTorneo(Personaje jugador1, Personaje jugador2)
+    {
+        bool jugadorAbandono = false;
+        while (jugador1.Salud > 0 && jugador2.Salud > 0)
+        {
+            if (jugador2.Salud > 0)
+            {
+                jugadorAbandono = pelea(jugador1, jugador2);
+                dibujarEscena(jugador1, jugador2);
+                if (jugadorAbandono) return (false, true);
 
 
-}
+            }
 
-   }
+            if (jugador2.Salud > 0)
+            {
+                atacar(jugador2, jugador1);
+                dibujarEscena(jugador1, jugador2);
+            }
+        }
+        if (jugador1.Salud > 0) return (true, false);
+
+        return (false, false);
+
+
+
+    }
     public bool torneo(List<Personaje> listaPersonajes, string path, Personaje jugador)
-{
-    int contadorRound = 1;
-    bool jugadorGanoTorneo = false;
-    string[] numeroRounds = {
+    {
+        int contadorRound = 1;
+        bool jugadorGanoTorneo = false;
+        string[] numeroRounds = {
     @"",
 
     @"
@@ -424,10 +450,10 @@ public void usarPoder(Personaje atacante, Personaje defensor)
         
 "
 };
-    foreach (var personaje in listaPersonajes)
-    {
-        Console.Clear();
-        Console.WriteLine(@"
+        foreach (var personaje in listaPersonajes)
+        {
+            Console.Clear();
+            Console.WriteLine(@"
                         ██████╗  ██████╗ ██╗   ██╗███╗   ██╗██████╗ 
                         ██╔══██╗██╔═══██╗██║   ██║████╗  ██║██╔══██╗
                         ██████╔╝██║   ██║██║   ██║██╔██╗ ██║██║  ██║
@@ -436,24 +462,24 @@ public void usarPoder(Personaje atacante, Personaje defensor)
                         ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ 
                                             
 {0}", numeroRounds[contadorRound]);
-        Thread.Sleep(2000);
-        desabTeclado(2);
+            Thread.Sleep(2000);
+            desabTeclado(2);
 
-        if (personaje != jugador)
-        {
-            contadorRound++;
-            bool jugadorGanoCombate = false;
-            do
+            if (personaje != jugador)
             {
-                dibujarEscena(jugador, personaje);
-                (bool jugadorGanoCombate, bool jugadorAbandono) resultadoCombate = combateTorneo(jugador, personaje);
-                if (resultadoCombate.jugadorAbandono) return false;
-                if (!resultadoCombate.jugadorGanoCombate)
+                contadorRound++;
+                bool jugadorGanoCombate = false;
+                do
                 {
-                    Console.Clear();
-                    Console.WriteLine(@"    
+                    dibujarEscena(jugador, personaje);
+                    (bool jugadorGanoCombate, bool jugadorAbandono) resultadoCombate = combateTorneo(jugador, personaje);
+                    if (resultadoCombate.jugadorAbandono) return false;
+                    if (!resultadoCombate.jugadorGanoCombate)
+                    {
+                        Console.Clear();
+                        Console.WriteLine(@"    
                                   ¡PERDISTE EL COMBATE! Inténtalo nuevamente.");
-                    Console.WriteLine(@"       
+                        Console.WriteLine(@"       
                                                     (()__(()
                                                     /       \
                                                    ( /    \  \
@@ -470,32 +496,32 @@ public void usarPoder(Personaje atacante, Personaje defensor)
 
 
 ");
-                    Thread.Sleep(4000);
-                    desabTeclado(4);
-                    desabTeclado(4);
-                    desabTeclado(4);
+                        Thread.Sleep(4000);
+                        desabTeclado(4);
+                        desabTeclado(4);
+                        desabTeclado(4);
 
-                }
-                else
+                    }
+                    else
+                    {
+                        jugadorGanoCombate = true;
+                    }
+                    jugador.Salud = 100;
+                    personaje.Salud = 100;
+                } while (!jugadorGanoCombate);
+
+                if (jugador.Salud <= 0)
                 {
-                    jugadorGanoCombate = true;
+                    jugadorGanoTorneo = false;
+                    break;
                 }
-                jugador.Salud = 100;
-                personaje.Salud = 100;
-            } while (!jugadorGanoCombate);
-
-            if (jugador.Salud <= 0)
-            {
-                jugadorGanoTorneo = false;
-                break;
             }
         }
-    }
 
 
-    Console.Clear();
-    Console.WriteLine("                               FELICIDADES! HAS GANADO EL TORNEO");
-    Console.WriteLine(@"
+        Console.Clear();
+        Console.WriteLine("                               FELICIDADES! HAS GANADO EL TORNEO");
+        Console.WriteLine(@"
                                                       _,-'^\
                                                   _,-'   ,\ )
                                               ,,-'     ,'  d'
@@ -516,32 +542,32 @@ public void usarPoder(Personaje atacante, Personaje defensor)
                                      J \,       (_o
                                       '""
 ");
-    string[] options = { "VOLVER AL MENU", "SALIR" };
+        string[] options = { "VOLVER AL MENU", "SALIR" };
 
-    Menu menuSalida = new Menu(options, " ");
-    int seleccion = menuSalida.RunSinClear("White");
-    switch (seleccion)
+        Menu menuSalida = new Menu(options, " ");
+        int seleccion = menuSalida.RunSinClear("White");
+        switch (seleccion)
+        {
+
+            case 1:
+                Environment.Exit(0);
+                break;
+            default:
+                break;
+        };
+        return true;
+    }
+
+
+    public void mostrarGanador(Personaje ganador)
     {
+        if (ganador.Nombre != null)
+        {
 
-        case 1:
-            Environment.Exit(0);
-            break;
-        default:
-            break;
-    };
-    return true;
-}
-
-
-public void mostrarGanador(Personaje ganador)
-{
-    if (ganador.Nombre != null)
-    {
-
-        Thread.Sleep(1000);
-        desabTeclado(1);
-        Console.Clear();
-        Console.WriteLine(@"
+            Thread.Sleep(1000);
+            desabTeclado(1);
+            Console.Clear();
+            Console.WriteLine(@"
                      ,---.           ,---.
                     / /""`.\.--""""""--./,'""\ \
                     \ \    _       _    / /
@@ -567,21 +593,37 @@ public void mostrarGanador(Personaje ganador)
                   ,'   ==.   \    /  .==    `.
                  /            )  (            \
                  `==========='    `==========='  ", ganador.Nombre, ganador.Tipo);
-        string[] options = { "VOLVER AL MENU", "SALIR" };
+            string[] options = { "VOLVER AL MENU", "SALIR" };
 
-        Menu menuSalida = new Menu(options, " ");
-        int seleccion = menuSalida.RunSinClear(ganador.Color);
-        switch (seleccion)
-        {
+            Menu menuSalida = new Menu(options, " ");
+            int seleccion = menuSalida.RunSinClear(ganador.Color);
+            switch (seleccion)
+            {
 
-            case 1:
-                Environment.Exit(0);
-                break;
-            default:
-                break;
-        };
+                case 1:
+                    Environment.Exit(0);
+                    break;
+                default:
+                    break;
+            };
+        }
+
+
+
     }
 
-
+    public void desabTeclado(int seconds)
+    {
+        DateTime end = DateTime.Now.AddSeconds(seconds);
+        while (DateTime.Now < end)
+        {
+            // Leer y descartar cualquier entrada del teclado
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(intercept: true);
+            }
+        }
+    }
 
 }
+
