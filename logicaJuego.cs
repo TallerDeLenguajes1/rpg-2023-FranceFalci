@@ -374,3 +374,214 @@ public void usarPoder(Personaje atacante, Personaje defensor)
 
 
 }
+
+   }
+    public bool torneo(List<Personaje> listaPersonajes, string path, Personaje jugador)
+{
+    int contadorRound = 1;
+    bool jugadorGanoTorneo = false;
+    string[] numeroRounds = {
+    @"",
+
+    @"
+                                            ██╗
+                                           ███║
+                                           ╚██║
+                                            ██║
+                                            ██║
+                                            ╚═╝
+    
+",
+    @"
+
+                                           ██████╗ 
+                                           ╚════██╗
+                                           █████╔╝
+                                           ██╔═══╝ 
+                                           ███████╗
+                                           ╚══════╝
+        
+",
+    @"
+
+                                            ██████╗ 
+                                            ╚════██╗
+                                            █████╔╝
+                                            ╚═══██╗
+                                            ██████╔╝
+                                            ╚═════╝ 
+        
+",
+    @"
+                              ███████╗██╗███╗   ██╗ █████╗ ██╗     
+                              ██╔════╝██║████╗  ██║██╔══██╗██║     
+                              █████╗  ██║██╔██╗ ██║███████║██║     
+                              ██╔══╝  ██║██║╚██╗██║██╔══██║██║     
+                              ██║     ██║██║ ╚████║██║  ██║███████╗
+                              ╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
+                                     
+
+        
+"
+};
+    foreach (var personaje in listaPersonajes)
+    {
+        Console.Clear();
+        Console.WriteLine(@"
+                        ██████╗  ██████╗ ██╗   ██╗███╗   ██╗██████╗ 
+                        ██╔══██╗██╔═══██╗██║   ██║████╗  ██║██╔══██╗
+                        ██████╔╝██║   ██║██║   ██║██╔██╗ ██║██║  ██║
+                        ██╔══██╗██║   ██║██║   ██║██║╚██╗██║██║  ██║
+                        ██║  ██║╚██████╔╝╚██████╔╝██║ ╚████║██████╔╝
+                        ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ 
+                                            
+{0}", numeroRounds[contadorRound]);
+        Thread.Sleep(2000);
+        desabTeclado(2);
+
+        if (personaje != jugador)
+        {
+            contadorRound++;
+            bool jugadorGanoCombate = false;
+            do
+            {
+                dibujarEscena(jugador, personaje);
+                (bool jugadorGanoCombate, bool jugadorAbandono) resultadoCombate = combateTorneo(jugador, personaje);
+                if (resultadoCombate.jugadorAbandono) return false;
+                if (!resultadoCombate.jugadorGanoCombate)
+                {
+                    Console.Clear();
+                    Console.WriteLine(@"    
+                                  ¡PERDISTE EL COMBATE! Inténtalo nuevamente.");
+                    Console.WriteLine(@"       
+                                                    (()__(()
+                                                    /       \
+                                                   ( /    \  \
+                                                    \ o o    /
+                                                    (_()_)__/ \
+                                                   / _,==.____ \
+                                                  (   |--|      )
+                                                  /\_.|__|'-.__/\_
+                                                 / (        /     \
+                                                 \  \      (      /
+                                                  )  '._____)    /
+                                               (((____.--(((____/
+
+
+
+");
+                    Thread.Sleep(4000);
+                    desabTeclado(4);
+                    desabTeclado(4);
+                    desabTeclado(4);
+
+                }
+                else
+                {
+                    jugadorGanoCombate = true;
+                }
+                jugador.Salud = 100;
+                personaje.Salud = 100;
+            } while (!jugadorGanoCombate);
+
+            if (jugador.Salud <= 0)
+            {
+                jugadorGanoTorneo = false;
+                break;
+            }
+        }
+    }
+
+
+    Console.Clear();
+    Console.WriteLine("                               FELICIDADES! HAS GANADO EL TORNEO");
+    Console.WriteLine(@"
+                                                      _,-'^\
+                                                  _,-'   ,\ )
+                                              ,,-'     ,'  d'
+                               ,,,           J_ \    ,'
+                              `\ /     __ ,-'  \ \ ,'
+                              / /  _,-'  '      \ \
+                             / |,-'             /  }
+                            (                 ,'  /
+                             '-,________         /
+                                        \       /
+                                         |      |
+                                        /       |
+                                       /        |
+                                      /  /~\   (\/)
+                                     {  /   \     }
+                                     | |     |   =|
+                                     / |      ~\  |
+                                     J \,       (_o
+                                      '""
+");
+    string[] options = { "VOLVER AL MENU", "SALIR" };
+
+    Menu menuSalida = new Menu(options, " ");
+    int seleccion = menuSalida.RunSinClear("White");
+    switch (seleccion)
+    {
+
+        case 1:
+            Environment.Exit(0);
+            break;
+        default:
+            break;
+    };
+    return true;
+}
+
+
+public void mostrarGanador(Personaje ganador)
+{
+    if (ganador.Nombre != null)
+    {
+
+        Thread.Sleep(1000);
+        desabTeclado(1);
+        Console.Clear();
+        Console.WriteLine(@"
+                     ,---.           ,---.
+                    / /""`.\.--""""""--./,'""\ \
+                    \ \    _       _    / /
+                     `./  / __   __ \  \,'
+                      /    /_O)_(_O\    \
+                      |  .-'  ___  `-.  |
+                   .--|       \_/       |--.
+                 ,'    \   \   |   /   /    `.
+                /       `.  `--^--'  ,'       \
+             .-""""""""""-.    `--.___.--'     .-""""""""""-.
+.-----------/         \------------------/         \--------------.
+| .---------\         /----------------- \         /------------. |
+| |          `-`--`--'                    `--'--'-'             | |
+| |                                                             | |  
+| |                GANADOR : {0} {1}                                
+| |                                                             | |
+| |_____________________________________________________________| |
+|_________________________________________________________________|
+                   )__________|__|__________(
+                  |            ||            |
+                  |____________||____________|
+                    ),-----.(      ),-----.(
+                  ,'   ==.   \    /  .==    `.
+                 /            )  (            \
+                 `==========='    `==========='  ", ganador.Nombre, ganador.Tipo);
+        string[] options = { "VOLVER AL MENU", "SALIR" };
+
+        Menu menuSalida = new Menu(options, " ");
+        int seleccion = menuSalida.RunSinClear(ganador.Color);
+        switch (seleccion)
+        {
+
+            case 1:
+                Environment.Exit(0);
+                break;
+            default:
+                break;
+        };
+    }
+
+
+
+}
