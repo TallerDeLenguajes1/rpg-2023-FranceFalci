@@ -1,54 +1,46 @@
-﻿using EspacioPersonaje;
-using EspacioPersonajeJSON;
+﻿
+
+using EspacioLogicaJuego;
+using EspacioPersonaje;
+using EspacioMenu;
+using System.Media;
+using System.Threading;
 
 internal class Program
 {
-    private static void Main(string[] args)
+    public static void Main(string[] args)
     {
 
-        List<Personaje> listaPersonajes;
-        listaPersonajes = InicioJuego("personajes.txt");
-        MostrarPersonajes(listaPersonajes);
+        var controladorJuego = new LogicaJuego();
+        var path = @"C:\\Users\\franc\\OneDrive\\Escritorio\\RPG\\RPG-taller1\\RPG-taller1\\personaje.json";
 
+        var listaPersonajes = controladorJuego.ObtenerPersonajes(path);
+        controladorJuego.resetearPersonajesSeleccionadosYColores(listaPersonajes, path);
+        int tipoCombate = controladorJuego.RunMenuPricipal(listaPersonajes);
 
+        if (tipoCombate == 1)
+        {
+            var jugador1 = controladorJuego.SeleccionarPersonajeYColor(listaPersonajes, path, 1);
+            var jugador2 = controladorJuego.SeleccionarPersonajeYColor(listaPersonajes, path, 2);
+            controladorJuego.dibujarEscena(jugador1, jugador2);
+            Personaje ganador = controladorJuego.combate(jugador1, jugador2);
+            controladorJuego.mostrarGanador(ganador);
+            Main(args);
+            Console.ReadKey(true);
 
-    } 
-
-// 1) Verificar al comienzo del Juego si existe el archivo de personajes:
-// A. Si existe y tiene datos cargar los personajes desde el archivo existente.
-// B. Si no existe generar 10 personajes utilizando la clase FabricaDePersonajes y
-// guárdelos en el archivo de personajes usando la clase PersonajesJson.
-    static public List<Personaje> InicioJuego(string path){
-        List<Personaje> listaPersonajes = new();
-        var personajeJson = new PersonajeJson();
-        int cantidadPersonajes = 4;
-
-        if(personajeJson.ExisteArchivo(path)){
-           listaPersonajes = personajeJson.LeerPersonajes(path);
-        }else{
-            var FabricarPersonajes = new FabricaDePersonajes();
-            for (int i = 0; i < cantidadPersonajes; i++)
-            {
-                var nuevoPersonaje = FabricarPersonajes.crearPersonaje();
-                listaPersonajes.Add(nuevoPersonaje);
-
-            } 
-            personajeJson.GuardarPersonajes(listaPersonajes,path);
         }
-        return listaPersonajes;
+        if (tipoCombate == 2)
+        {
+            var jugador = controladorJuego.SeleccionarPersonajeYColor(listaPersonajes, path, 0);
+            controladorJuego.torneo(listaPersonajes, path, jugador);
+            Main(args);
+            Console.ReadKey(true);
+
+        }
+
+
+
+
+
     }
-// 2) Muestre por pantalla los datos y características de los personajes cargados.
-
-static public void MostrarPersonajes(List<Personaje> listaPersonajes){
-    foreach (var personaje in listaPersonajes)
-    {
-        Console.WriteLine("Nombre: " + personaje.Nombre);
-        Console.WriteLine("Nivel: " +personaje.Nivel);
-        Console.WriteLine("Destreza: " +personaje.Destreza);
-        Console.WriteLine("------------");
-
-
-
-    }
-}
 }
