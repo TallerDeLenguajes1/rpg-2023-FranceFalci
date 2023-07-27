@@ -284,4 +284,78 @@ private void dibujarBarraSalud(int saludJugador)
 
 
 }
+
+public Personaje combate(Personaje jugador1, Personaje jugador2)
+{
+
+    bool jugadorAbandono = false;
+    while (jugador1.Salud > 0 && jugador2.Salud > 0)
+    {
+
+        if (jugador2.Salud > 0)
+        {
+            jugadorAbandono = pelea(jugador1, jugador2);
+            dibujarEscena(jugador1, jugador2);
+            if (jugadorAbandono) return jugador2;
+
+        }
+
+        if (jugador2.Salud > 0)
+        {
+            jugadorAbandono = pelea(jugador2, jugador1);
+            dibujarEscena(jugador1, jugador2);
+            if (jugadorAbandono) return jugador1;
+
+        }
+    }
+    if (jugador1.Salud > 0) return jugador1;
+    return jugador2;
+
+
+
+}
+
+
+
+public bool pelea(Personaje atacante, Personaje defensor)
+{
+
+    if (atacante != null)
+    {
+
+        string prompt = (atacante.Nombre).ToUpper() + " (" + atacante.Tipo + ")  ELIJA SU PROXIMO MOVIMIENTO";
+        string[] options = { "ATACAR", "USAR PODER", "ABANDONAR" };
+        Menu opcionesPelea = new Menu(options, prompt);
+        int seleccionPelea = opcionesPelea.RunSinClear(atacante.Color);
+        switch (seleccionPelea)
+        {
+            case 0:
+                atacar(atacante, defensor);
+                break;
+            case 1:
+                usarPoder(atacante, defensor);
+                break;
+            case 2:
+                return true;
+
+
+        };
+
+    }
+    return false;
+
+
+}
+
+public void atacar(Personaje atacante, Personaje defensor)
+{
+    Random random = new Random();
+    int ataque = atacante.Fuerza * atacante.Destreza * atacante.Nivel;
+    int efectividad = random.Next(1, 101);
+    int defensa = defensor.Armadura * defensor.Velocidad;
+    int ajuste = 500;
+    int danio = ((ataque * efectividad) - defensa) / ajuste;
+    defensor.Salud -= danio;
+
+
 }
