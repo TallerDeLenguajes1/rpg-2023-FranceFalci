@@ -242,3 +242,46 @@ En Animal Combat, la emoción nunca se detiene.¡Enfréntate a los desafíos, de
         return personajeSeleccionado;
     }
 }
+public void dibujarEscena(Personaje jugador1, Personaje jugador2)
+{
+
+    Console.Clear();
+    Console.WriteLine(@"
+.-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-.
+|                                                                       |
+|                    {0}     VS    {1}                                      
+|                                                                       |
+`-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-----'", jugador1.Nombre, jugador2.Nombre);
+
+
+    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), jugador1.Color, true);
+    Console.WriteLine(jugador1.Asci);
+    dibujarBarraSalud(jugador1.Salud);
+    Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), jugador2.Color, true);
+
+    Console.WriteLine(jugador2.Asci);
+    dibujarBarraSalud(jugador2.Salud);
+    Console.ResetColor();
+
+}
+private void dibujarBarraSalud(int saludJugador)
+{
+    Console.ResetColor();
+    Console.Write("[");
+    Console.BackgroundColor = ConsoleColor.Green;
+    for (int i = 0; i < saludJugador / 2; i++)
+    {
+        Console.Write(" ");
+    }
+    Console.BackgroundColor = ConsoleColor.Black;
+    for (int i = saludJugador / 2; i < 50; i++)
+    {
+        Console.Write(" ");
+    }
+    Console.ResetColor();
+    Console.Write(@"] ({0}/100)", saludJugador);
+
+
+
+}
+}
