@@ -161,3 +161,71 @@ public class ASCIIArt
 
 
 
+
+
+
+
+}
+public class ConsumoAPI
+{
+
+
+    public class Result
+    {
+        public Name name { get; set; }
+    }
+
+    public class Name
+    {
+        public string title { get; set; }
+        public string first { get; set; }
+        public string last { get; set; }
+    }
+
+
+    public class InfoJson
+    {
+        public List<Result> results { get; set; }
+    }
+    public string? GetNombre()
+    {
+        var url = $"https://randomuser.me/api/?gender=male";
+        var request = (HttpWebRequest)WebRequest.Create(url);
+        request.Method = "GET";
+        request.ContentType = "application/json";
+        request.Accept = "application/json";
+        try
+        {
+            using (WebResponse response = request.GetResponse())
+            {
+                using (Stream strReader = response.GetResponseStream())
+                {
+                    if (strReader == null) return " ";
+                    using (StreamReader objReader = new StreamReader(strReader))
+                    {
+                        string responseBody = objReader.ReadToEnd();
+                        Console.WriteLine(responseBody);
+                        InfoJson data = JsonSerializer.Deserialize<InfoJson>(responseBody);
+                        foreach (var result in data.results)
+                        {
+                            if (!result.name.first.Contains("??"))
+                            {
+                                Console.WriteLine(result.name.first);
+                                return result.name.first;
+                            }
+                        }
+
+                        // Si todos los resultados contienen "??", retorna un valor por defecto
+                        return null;
+
+                    }
+                }
+            }
+        }
+        catch (WebException ex)
+        {
+            Console.WriteLine("Problemas de acceso a la API" + ex);
+        }
+        return "";
+    }
+}
