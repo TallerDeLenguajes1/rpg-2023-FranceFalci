@@ -359,3 +359,18 @@ public void atacar(Personaje atacante, Personaje defensor)
 
 
 }
+
+public void usarPoder(Personaje atacante, Personaje defensor)
+{
+    Random random = new Random();
+    int fuerza = atacante.Fuerza + 5;
+    int ataque = fuerza * atacante.Destreza * atacante.Nivel;
+    int efectividad = random.Next(1, 101);
+    int defensa = defensor.Armadura * defensor.Velocidad;
+    int ajuste = 500;
+    int danio = ((ataque * efectividad) - defensa) / ajuste;
+    defensor.Salud -= danio;
+    atacante.Salud = atacante.Salud - 5;
+
+
+}
