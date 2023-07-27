@@ -88,3 +88,76 @@ public class FabricaDePersonajes
 
     }
 }
+
+public class ASCIIArt
+{
+
+    public string obtenerAsciiPersonaje(string Nombre)
+    {
+        switch (Nombre)
+        {
+            case "Caballo":
+                string Caballo = @"
+  ._.-.___.' (`\
+ //(        ( `'
+'/ )\ ).__. ) 
+' <' `\ ._/'\
+   `   \     \";
+                return Caballo;
+            case "Gato":
+                string Gato = @"
+         _._     _,-'""""`-._
+(,-.`._,'(       |\`-/|
+    `-.-' \ )-`( , o o)
+          `-    \`_`""'-";
+                return Gato;
+
+            case "Perro":
+                string Perro = @"
+           __
+      (___()'`;
+      /,    /`
+      \\""--\\";
+                return Perro;
+
+            case "Mono":
+                string Mono = @"
+          __
+     w  c(..)o   (
+      \__(-)    __)
+          /\   (
+         /(_)___)
+         w /|
+          | \
+          m  m";
+                return Mono;
+
+            case "Conejo":
+                string Conejo = @"
+             ,\
+             \\\,_
+              \` ,\
+         __,.-"" =__)
+       .""        )
+    ,_/   ,    \/\_
+    \_|    )_-\ \_-`
+      `-----` `--`";
+                return Conejo;
+            case "Oso":
+                string Oso = @"
+  __         __
+/  \.-""""""-./ 
+\    -   -    /
+ |   o   o   |
+ \  .-'''-.  /
+  '-\__Y__/-'
+     `---`";
+                return Oso;
+
+        }
+
+        return "h";
+    }
+
+
+
