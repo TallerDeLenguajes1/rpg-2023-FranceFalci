@@ -204,13 +204,13 @@ public class ConsumoAPI
                     using (StreamReader objReader = new StreamReader(strReader))
                     {
                         string responseBody = objReader.ReadToEnd();
-                        Console.WriteLine(responseBody);
+                        // Console.WriteLine(responseBody);
                         InfoJson data = JsonSerializer.Deserialize<InfoJson>(responseBody);
                         foreach (var result in data.results)
                         {
                             if (!result.name.first.Contains("??"))
                             {
-                                Console.WriteLine(result.name.first);
+                                // Console.WriteLine(result.name.first);
                                 return result.name.first;
                             }
                         }
